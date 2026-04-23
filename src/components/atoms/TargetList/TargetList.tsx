@@ -1,11 +1,11 @@
 import { ListOrdered } from 'lucide-react';
-import { ParsonsProblemTargetPlaceholder } from './ParsonsProblemTargetPlaceholder';
+import { TargetPlaceholder } from '../TargetPlaceholder/TargetPlaceholder';
 
-interface ParsonsProblemTargetListProps {
+interface TargetListProps {
   count: number;
 }
 
-export function ParsonsProblemTargetList({ count }: ParsonsProblemTargetListProps) {
+export function TargetList({ count }: TargetListProps) {
   return (
     <div className="space-y-3 p-4 bg-muted/20 rounded-xl border border-dashed border-border">
       <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
@@ -15,7 +15,7 @@ export function ParsonsProblemTargetList({ count }: ParsonsProblemTargetListProp
 
       <div className="space-y-2">
         {Array.from({ length: count }, (_, index) => (
-          <ParsonsProblemTargetPlaceholder key={index} index={index} />
+          <TargetPlaceholder key={index} index={index} />
         ))}
       </div>
     </div>

@@ -1,10 +1,10 @@
-interface ParsonsProblemStatusInfoProps {
+interface StatusInfoProps {
   correctOrder?: string[];
   solutionOrder: string[];
   blockCount: number;
 }
 
-export function ParsonsProblemStatusInfo({ correctOrder, solutionOrder, blockCount }: ParsonsProblemStatusInfoProps) {
+export function StatusInfo({ correctOrder, solutionOrder, blockCount }: StatusInfoProps) {
   return (
     <div className="text-xs text-muted-foreground space-y-1">
       {correctOrder && correctOrder.length > 0 && (

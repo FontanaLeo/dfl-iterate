@@ -1,12 +1,12 @@
 import { GripVertical } from 'lucide-react';
 import { CodeBlock } from '@/types';
-import { ParsonsProblemSourceBlock } from './ParsonsProblemSourceBlock';
+import { SourceBlock } from '../SourceBlock/SourceBlock';
 
-interface ParsonsProblemSourceListProps {
+interface SourceListProps {
   blocks: CodeBlock[];
 }
 
-export function ParsonsProblemSourceList({ blocks }: ParsonsProblemSourceListProps) {
+export function SourceList({ blocks }: SourceListProps) {
   return (
     <div className="space-y-3">
       <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
@@ -16,7 +16,7 @@ export function ParsonsProblemSourceList({ blocks }: ParsonsProblemSourceListPro
 
       <div className="space-y-2">
         {blocks.map((block) => (
-          <ParsonsProblemSourceBlock key={block.id} block={block} />
+          <SourceBlock key={block.id} block={block} />
         ))}
       </div>
     </div>

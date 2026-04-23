@@ -1,11 +1,11 @@
 import { GripVertical } from 'lucide-react';
 import { CodeBlock } from '@/types';
 
-interface ParsonsProblemSourceBlockProps {
+interface SourceBlockProps {
   block: CodeBlock;
 }
 
-export function ParsonsProblemSourceBlock({ block }: ParsonsProblemSourceBlockProps) {
+export function SourceBlock({ block }: SourceBlockProps) {
   return (
     <div
       key={`source-${block.id}`}

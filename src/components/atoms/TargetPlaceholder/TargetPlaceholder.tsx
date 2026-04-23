@@ -1,10 +1,10 @@
 import { GripVertical } from 'lucide-react';
 
-interface ParsonsProblemTargetPlaceholderProps {
+interface TargetPlaceholderProps {
   index: number;
 }
 
-export function ParsonsProblemTargetPlaceholder({ index }: ParsonsProblemTargetPlaceholderProps) {
+export function TargetPlaceholder({ index }: TargetPlaceholderProps) {
   return (
     <div
       key={`target-placeholder-${index}`}

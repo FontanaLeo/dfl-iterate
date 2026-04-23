@@ -2,12 +2,12 @@ import { Activity } from '@/types';
 import { useParsonsProblem } from '@/hooks/useParsonsProblem';
 import { ActivityGameCard, GameButton } from '@/components/game';
 import {
-  ParsonsProblemAssembledCode,
-  ParsonsProblemResultBanner,
-  ParsonsProblemSourceList,
-  ParsonsProblemStatusInfo,
-  ParsonsProblemTargetList,
-} from '@/components/atoms/ParsonsProblem';
+  AssembledCode,
+  ResultBanner,
+  SourceList,
+  StatusInfo,
+  TargetList,
+} from '@/components/atoms';
 
 interface ParsonsProblemProps {
   activity: Activity;
@@ -34,15 +34,16 @@ export function ParsonsProblem({ activity, onSubmit }: ParsonsProblemProps) {
       }
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8" ref={containerRef}>
-        <ParsonsProblemSourceList blocks={blocks} />
-        <ParsonsProblemTargetList count={blocks.length} />
+        <SourceList blocks={blocks} />
+        <TargetList count={blocks.length} />
       </div>
 
-      {assembledCode && <ParsonsProblemAssembledCode assembledCode={assembledCode} />}
+      {assembledCode && <AssembledCode assembledCode={assembledCode} title="Código Montado"/>}
 
-      <ParsonsProblemResultBanner submitted={submitted} isCorrect={isCorrect} />
 
-      <ParsonsProblemStatusInfo
+      <ResultBanner submitted={submitted} isCorrect={isCorrect} />
+
+      <StatusInfo
         correctOrder={activity.correctOrder}
         solutionOrder={solutionOrder}
         blockCount={blocks.length}

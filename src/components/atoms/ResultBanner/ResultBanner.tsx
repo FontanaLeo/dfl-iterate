@@ -1,9 +1,9 @@
-interface ParsonsProblemResultBannerProps {
+interface ResultBannerProps {
   submitted: boolean;
   isCorrect: boolean | null;
 }
 
-export function ParsonsProblemResultBanner({ submitted, isCorrect }: ParsonsProblemResultBannerProps) {
+export function ResultBanner({ submitted, isCorrect }: ResultBannerProps) {
   if (!submitted || isCorrect === null) {
     return null;
   }
