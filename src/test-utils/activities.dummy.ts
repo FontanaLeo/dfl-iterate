@@ -1,7 +1,23 @@
 import { Activity } from '@/types';
 import { ActivityType, ActivityStatus } from '@/enums';
 
+
 export const activitiesData: Activity[] = [
+  {
+    id: 'act-11',
+    lessonId: 'lesson-1',
+    order: 11,
+    type: ActivityType.PREDICT_OUTPUT,
+    title: 'Predict Output',
+    objective: '',
+    instructions: 'Digite o que vai aparecer no console...',
+    targetFiles: ['src/pages/CheckoutPage.tsx'],
+    status: ActivityStatus.CURRENT,
+    aiGeneratedCode:`let total = 0;
+    for (let i = 1; i <= 3; i++) {total += i;}
+    console.log(total);`,
+    expectedOutput: '6'
+  },
   {
     id: 'act-1',
     lessonId: 'lesson-1',

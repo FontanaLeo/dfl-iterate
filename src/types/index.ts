@@ -89,8 +89,10 @@ export interface Activity {
   options?: DecisionOption[]; 
   fixOptions?: FixOption[];
   choices?: ChooseOption[];
+  placeholder?: string[];
   aiGeneratedCode?: string;
   expectedIssues?: string[];
+  expectedOutput?: string;
   bugLine?: number;
   xpReward?: number;
   editableRegions?: EditableRegion[];

@@ -65,6 +65,11 @@ const typeConfig: Record<ActivityType, { icon: typeof Search; label: string; col
     label: 'READ AND CHOOSE',
     color: 'text-primary'
   },
+  [ActivityType.PREDICT_OUTPUT]: {
+    icon: Wrench,
+    label: 'PREDICT OUTPUT',
+    color: 'text-primary'
+  },
     [ActivityType.REPL_CHALLENGE]: {
     icon: Terminal,
     label: 'TERMINAL CHALLENGE',

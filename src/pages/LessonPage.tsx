@@ -10,6 +10,7 @@ import {
   BreakAndFix,
   VideoChallenge,
   VisualImplementation,
+  PredictOutput,
   FixTheCode,
   StepThrough,
 } from '@/components/activity';
@@ -32,7 +33,7 @@ import { ReadAndChoose } from '@/components/molecules/ReadAndChoose/ReadAndChoos
 import { REPLChallenge } from '@/components/activity/REPLChallenge';
 import { SpotTheBug } from '@/components/activity/SpotTheBug';
 
-export default function LessonPage() {
+export default function LessonPage() {        
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
 
@@ -394,6 +395,20 @@ export default function LessonPage() {
             }}
           />
         );
+      case ActivityType.PREDICT_OUTPUT:
+        return (
+          <PredictOutput 
+            activity={currentActivity} 
+            onSubmit={(output) => {
+              handleActivityComplete(currentActivity.id);
+            }}
+            onError={() => {
+              handleActivityComplete(currentActivity.id, 'default-failure', false);
+            }}
+          />
+        );
+      }
+
 
         case ActivityType.STEP_THROUGH:
           return (
@@ -409,6 +424,7 @@ export default function LessonPage() {
         return null;
     }
   };
+
 
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
