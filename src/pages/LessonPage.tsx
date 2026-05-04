@@ -29,6 +29,7 @@ import { ActivityType, ActivityStatus, ProjectStatus } from '@/enums';
 import { lessonsData } from '@/test-utils/lessons.dummy';
 import { aiMessageTemplates } from '@/test-utils/ai-messages.dummy';
 import { FixWithChoices } from '@/components/activity/FixWithChoices';
+import { BestImplementation } from '@/components/activity/BestImplementation';
 import { ReadAndChoose } from '@/components/molecules/ReadAndChoose/ReadAndChoose';
 import { REPLChallenge } from '@/components/activity/REPLChallenge';
 import { SpotTheBug } from '@/components/activity/SpotTheBug';
@@ -358,7 +359,23 @@ export default function LessonPage() {
               handleActivityComplete(currentActivity.id, 'act-7-fix-code-success', true);
             }}
           />
-        );  
+        );
+      
+      case ActivityType.BEST_IMPLEMENTATION:
+        return (
+          <BestImplementation
+            activity={currentActivity}
+            onSubmit={(selectedId) => {
+              handleActivityComplete(
+                currentActivity.id,
+                selectedId === currentActivity.correctImplementationId
+                  ? 'default-success'
+                  : 'default-failure',
+                selectedId === currentActivity.correctImplementationId
+              );
+            }}
+          />
+        );
      
       case ActivityType.FIX_WITH_CHOICES:
         return (

@@ -11,6 +11,7 @@ export enum ActivityType {
   READ_AND_CHOOSE = "read_and_choose",
   PREDICT_OUTPUT = "predict_output",
   FIX_THE_CODE = 'fix_the_code',
+  BEST_IMPLEMENTATION = 'best_implementation',
   TRUE_OR_FALSE = 'true_or_false',
   REPL_CHALLENGE = 'repl_challenge',
   STEP_THROUGH = 'step_through', 

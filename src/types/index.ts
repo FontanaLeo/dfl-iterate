@@ -26,6 +26,20 @@ export type FixOption = {
   isCorrect: boolean;
 };
 
+export type BestOptionMetrics = {
+  timeComplexity: string;
+  spaceComplexity: string;
+  linesOfCode: number;
+  readability: number;
+}
+
+export type BestOption = {
+  id: string;
+  code: string;
+  metrics?: BestOptionMetrics;
+  explanation?: string;
+}
+
 export interface ChooseOption {
   id: string;
   label: string;
@@ -106,6 +120,8 @@ export interface Activity {
     expectedOutput: string;
     description: string;
   }[];
+  bestOption?: BestOption[];
+  correctImplementationId?: string;
   commands?: TerminalCommandStep[];
   initialPrompt?: string;
 }
