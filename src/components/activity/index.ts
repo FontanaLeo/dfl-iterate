@@ -11,4 +11,5 @@ export { FixTheCode } from './FixTheCode';
 export { ImageZoomModal } from './ImageZoomModal';
 export { SpotTheBug } from './SpotTheBug';
 export { FixWithChoices } from './FixWithChoices';
+export { TrueOrFalse } from './TrueOrFalse';
 export { StepThrough } from './StepThrough';

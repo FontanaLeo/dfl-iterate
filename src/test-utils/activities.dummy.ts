@@ -36,9 +36,25 @@ export const activitiesData: Activity[] = [
       },
     ],
   },
-
   {
     id: 'act-2',
+    lessonId: 'lesson-1',
+    order: 2,
+    type: ActivityType.TRUE_OR_FALSE,
+    title: 'Verdadeiro ou Falso: Funções Puras',
+    objective: 'Teste seu conhecimento sobre funções puras em JavaScript.',
+    instructions: `Uma função pura sempre retorna o mesmo resultado para os mesmos argumentos e não produz efeitos colaterais.`,
+    targetFiles: [],
+    status: ActivityStatus.LOCKED,
+    trueFalseConfig: {
+      correctAnswer: true,
+      explanation: 'Funções puras são previsíveis e testáveis, pois não dependem de estado externo ou variáveis mutáveis.',
+    },
+
+
+  },
+  {
+    id: 'act-3',
     lessonId: 'lesson-1',
     order: 3,
     type: ActivityType.QUALITY_REVIEW,
@@ -81,7 +97,7 @@ export default Header;`,
     xpReward: 25,
   },
   {
-    id: 'act-3',
+    id: 'act-4',
     lessonId: 'lesson-1',
     order: 4,
     type: ActivityType.CONSTRAINED_EDIT,
@@ -103,7 +119,7 @@ Restrição: Você só pode editar as linhas 8-12 e 18-22.`,
     ],
   },
   {
-    id: 'act-4',
+    id: 'act-5',
     lessonId: 'lesson-1',
     order: 5,
     type: ActivityType.DECISION_FORK,
@@ -138,7 +154,7 @@ Não existe resposta "errada" - cada opção tem trade-offs.`,
     ],
   },
   {
-    id: 'act-5',
+    id: 'act-6',
     lessonId: 'lesson-1',
     order: 6,
     type: ActivityType.BREAK_AND_FIX,
@@ -180,7 +196,7 @@ export function CheckoutPage() {
 }`,
   },
   {
-    id: 'act-6',
+    id: 'act-7',
     lessonId: 'lesson-1',
     order: 7,
     type: ActivityType.VIDEO_CHALLENGE,
@@ -229,7 +245,7 @@ export function ProductList({ products }: { products: Product[] }) {
     },
   },
   {
-    id: 'act-7',
+    id: 'act-8',
     lessonId: 'lesson-1',
     order: 8,
     type: ActivityType.VISUAL_IMPLEMENTATION,

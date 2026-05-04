@@ -76,6 +76,7 @@ export type bugChallenges = {
 }
 
 export interface Activity {
+  trueFalseConfig: any;
   id: string;
   lessonId: string;
   order: number;

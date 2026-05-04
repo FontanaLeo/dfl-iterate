@@ -17,6 +17,11 @@ const typeConfig: Record<ActivityType, { icon: typeof Search; label: string; col
     label: 'QUALITY REVIEW',
     color: 'text-primary'
   },
+  [ActivityType.TRUE_OR_FALSE]: {
+    icon: CheckCircle2,
+    label: 'TRUE OR FALSE',
+    color: 'text-primary'
+  },
   [ActivityType.CONSTRAINED_EDIT]: {
     icon: Scissors,
     label: 'CONSTRAINED EDIT',
