@@ -112,6 +112,8 @@ export interface Activity {
   editableRegions?: EditableRegion[];
   videoConfig?: VideoConfig;
   visualConfig?: VisualConfig;
+  codeBlocks?: CodeBlock[];
+  correctOrder?: string[];
   steps?: Step[];  
   bugChallenges?: bugChallenges[];
   /** only applies when type === ActivityType.FIX_THE_CODE */
@@ -159,6 +161,12 @@ export interface GitLogEntry {
   type: 'activity_complete' | 'decision' | 'fix';
 }
 
+export interface CodeBlock {
+  id: string;
+  code: string;
+  indentLevel?: number;
+  isDistractor?: boolean;
+}
 /** result from executing a test case */
 export interface TestResult {
   description: string;

@@ -31,6 +31,7 @@ import { aiMessageTemplates } from '@/test-utils/ai-messages.dummy';
 import { FixWithChoices } from '@/components/activity/FixWithChoices';
 import { BestImplementation } from '@/components/activity/BestImplementation';
 import { ReadAndChoose } from '@/components/molecules/ReadAndChoose/ReadAndChoose';
+import { ParsonsProblem } from '@/components/activity/ParsonsProblem';
 import { REPLChallenge } from '@/components/activity/REPLChallenge';
 import { SpotTheBug } from '@/components/activity/SpotTheBug';
 
@@ -251,18 +252,18 @@ export default function LessonPage() {
           />
         );
 
-     case ActivityType.SPOT_THE_BUG:
-  return (
-    <SpotTheBug
-      activity={currentActivity}
-      onSuccess={() => 
-        handleActivityComplete(currentActivity.id, 'spot-the-bug-success', true)
-      }
-      onError={() => 
-        handleActivityComplete(currentActivity.id, 'spot-the-bug-fail', false)
-      }
-    />
-  );
+      case ActivityType.SPOT_THE_BUG:
+        return (
+          <SpotTheBug
+            activity={currentActivity}
+            onSuccess={() => 
+              handleActivityComplete(currentActivity.id, 'spot-the-bug-success', true)
+            }
+            onError={() => 
+              handleActivityComplete(currentActivity.id, 'spot-the-bug-fail', false)
+            }
+          />
+        );
 
       case ActivityType.QUALITY_REVIEW:
         return (
@@ -307,7 +308,7 @@ export default function LessonPage() {
           <BreakAndFix
             activity={currentActivity}
             errorMessage="TypeError: Cannot read property 'map' of undefined
-    at CheckoutPage (CheckoutPage.tsx:7:18)"
+            at CheckoutPage (CheckoutPage.tsx:7:18)"
             onFix={(code) => {
               handleCodeSubmit(code, currentActivity.targetFiles[0]);
               handleActivityComplete(currentActivity.id, 'act-4-success', true);
@@ -412,6 +413,27 @@ export default function LessonPage() {
             }}
           />
         );
+        
+      case ActivityType.PARSONS_PROBLEM:
+        return (
+          <ParsonsProblem 
+            activity={currentActivity} 
+            onSubmit={(orderedIds) => {
+              const correctOrder = currentActivity.correctOrder || [];
+              
+              const isCorrect = JSON.stringify(orderedIds) === JSON.stringify(correctOrder);
+
+              const responseKey = isCorrect ? 'act-parsons-success' : 'act-parsons-wrong';
+
+              handleActivityComplete(
+                currentActivity.id,
+                responseKey,
+                isCorrect
+              );
+            }}
+          />
+        );
+        
       case ActivityType.PREDICT_OUTPUT:
         return (
           <PredictOutput 
@@ -425,7 +447,6 @@ export default function LessonPage() {
           />
         );
       }
-
 
         case ActivityType.STEP_THROUGH:
           return (

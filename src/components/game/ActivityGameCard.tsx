@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { ActivityType } from '@/enums';
-import { Search, Scissors, GitBranch, Wrench, Video, Palette, Bug, ChevronRight, Terminal } from 'lucide-react';
+import { Search, Scissors, GitBranch, Wrench, Video, Palette, Bug, ChevronRight, Puzzle, Terminal } from 'lucide-react';
 
 interface ActivityGameCardProps {
   type: ActivityType;
@@ -65,6 +65,10 @@ const typeConfig: Record<ActivityType, { icon: typeof Search; label: string; col
     label: 'READ AND CHOOSE',
     color: 'text-primary'
   },
+  [ActivityType.PARSONS_PROBLEM]: {
+    icon: Puzzle,
+    label: 'PARSONS PROBLEM',
+    color: 'text-yellow-400'
   [ActivityType.PREDICT_OUTPUT]: {
     icon: Wrench,
     label: 'PREDICT OUTPUT',

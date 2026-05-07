@@ -9,6 +9,8 @@ export enum ActivityType {
   SPOT_THE_BUG = 'spot_the_bug',
   FIX_WITH_CHOICES = "fix_with_choices",
   READ_AND_CHOOSE = "read_and_choose",
+  FIX_THE_CODE = "fix_the_code",
+  PARSONS_PROBLEM = "parsons_problem",
   PREDICT_OUTPUT = "predict_output",
   FIX_THE_CODE = 'fix_the_code',
   BEST_IMPLEMENTATION = 'best_implementation',
