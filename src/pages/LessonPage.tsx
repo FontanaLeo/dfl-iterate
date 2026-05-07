@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { TrueOrFalse } from '@/components/activity';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal, Bot } from 'lucide-react';
@@ -8,7 +9,10 @@ import {
   DecisionFork,
   BreakAndFix,
   VideoChallenge,
-  VisualImplementation
+  VisualImplementation,
+  PredictOutput,
+  FixTheCode,
+  StepThrough,
 } from '@/components/activity';
 import { DynamicPreview } from '@/components/preview';
 import { GitLog } from '@/components/project';
@@ -18,16 +22,20 @@ import {
   ResultModal,
   AIHistoryDrawer,
   LessonCompleteScreen,
+  ActivityGameCard,
 } from '@/components/game';
 import { useActivityPage, useAIHistory, useSoundEffects, usePreviewState } from '@/hooks';
 import { ActivityType, ActivityStatus, ProjectStatus } from '@/enums';
 import { lessonsData } from '@/test-utils/lessons.dummy';
 import { aiMessageTemplates } from '@/test-utils/ai-messages.dummy';
 import { FixWithChoices } from '@/components/activity/FixWithChoices';
+import { BestImplementation } from '@/components/activity/BestImplementation';
 import { ReadAndChoose } from '@/components/molecules/ReadAndChoose/ReadAndChoose';
 import { ParsonsProblem } from '@/components/activity/ParsonsProblem';
+import { REPLChallenge } from '@/components/activity/REPLChallenge';
+import { SpotTheBug } from '@/components/activity/SpotTheBug';
 
-export default function LessonPage() {
+export default function LessonPage() {        
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
 
@@ -215,6 +223,21 @@ export default function LessonPage() {
     if (!currentActivity) return null;
 
     switch (currentActivity.type) {
+      case ActivityType.TRUE_OR_FALSE:
+        return (
+          <TrueOrFalse
+            key={`${currentActivity.id}-${Date.now()}`}
+            activity={currentActivity}
+            onSubmit={(answer) => {
+              const isCorrect = answer === currentActivity.trueFalseConfig?.correctAnswer;
+              handleActivityComplete(
+                currentActivity.id,
+                isCorrect ? 'default-success' : 'default-failure',
+                isCorrect
+              );
+            }}
+          />
+        );
 
       case ActivityType.READ_AND_CHOOSE:
         return (
@@ -228,7 +251,20 @@ export default function LessonPage() {
             }}
           />
         );
-        
+
+      case ActivityType.SPOT_THE_BUG:
+        return (
+          <SpotTheBug
+            activity={currentActivity}
+            onSuccess={() => 
+              handleActivityComplete(currentActivity.id, 'spot-the-bug-success', true)
+            }
+            onError={() => 
+              handleActivityComplete(currentActivity.id, 'spot-the-bug-fail', false)
+            }
+          />
+        );
+
       case ActivityType.QUALITY_REVIEW:
         return (
           <QualityReview
@@ -305,13 +341,50 @@ export default function LessonPage() {
             }}
           />
         );
+
+      case ActivityType.FIX_THE_CODE:
+        return (
+          <FixTheCode
+            activity={currentActivity}
+            onRunTests={async (code) => {
+              // naive local runner based on testCases
+              return (
+                currentActivity.testCases || []
+              ).map(tc => ({
+                description: tc.description,
+                passed: code.includes(tc.expectedOutput),
+              }));
+            }}
+            onSubmit={(code) => {
+              handleCodeSubmit(code, currentActivity.targetFiles[0]);
+              handleActivityComplete(currentActivity.id, 'act-7-fix-code-success', true);
+            }}
+          />
+        );
+      
+      case ActivityType.BEST_IMPLEMENTATION:
+        return (
+          <BestImplementation
+            activity={currentActivity}
+            onSubmit={(selectedId) => {
+              handleActivityComplete(
+                currentActivity.id,
+                selectedId === currentActivity.correctImplementationId
+                  ? 'default-success'
+                  : 'default-failure',
+                selectedId === currentActivity.correctImplementationId
+              );
+            }}
+          />
+        );
+     
       case ActivityType.FIX_WITH_CHOICES:
         return (
           <FixWithChoices
             activity={currentActivity}
             onSubmit={(selectedId) => {
               const selected = currentActivity.fixOptions?.find(
-                f => f.id === selectedId
+              f => f.id === selectedId
               );
 
               console.log('Current Activity:', currentActivity);
@@ -322,9 +395,25 @@ export default function LessonPage() {
                 selected?.isCorrect ? 'act-fix-success' : 'act-fix-wrong',
                 selected?.isCorrect
               );
+
             }}
           />
         );
+        
+      case ActivityType.REPL_CHALLENGE:
+        return (
+          <REPLChallenge
+            activity={currentActivity}
+            onSubmit={(executedCommands) => {
+              handleActivityComplete(
+                currentActivity.id,
+                'act-terminal-success',
+                true
+              );
+            }}
+          />
+        );
+        
       case ActivityType.PARSONS_PROBLEM:
         return (
           <ParsonsProblem 
@@ -344,10 +433,36 @@ export default function LessonPage() {
             }}
           />
         );
+        
+      case ActivityType.PREDICT_OUTPUT:
+        return (
+          <PredictOutput 
+            activity={currentActivity} 
+            onSubmit={(output) => {
+              handleActivityComplete(currentActivity.id);
+            }}
+            onError={() => {
+              handleActivityComplete(currentActivity.id, 'default-failure', false);
+            }}
+          />
+        );
+      }
+
+        case ActivityType.STEP_THROUGH:
+          return (
+            <StepThrough
+              activity={currentActivity}
+              onSubmit={(answers) => {
+                handleActivityComplete(currentActivity.id, 'act-step-through-success', true);
+              }}
+            />
+          );
+
       default:
         return null;
     }
   };
+
 
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
