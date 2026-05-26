@@ -99,8 +99,13 @@ export type bugChallenges = {
   tip: string;
 }
 
+export interface TrueFalseConfig {
+  correctAnswer: boolean;
+  explanation?: string;
+}
+
 export interface Activity {
-  trueFalseConfig: any;
+  trueFalseConfig?: TrueFalseConfig;
   id: string;
   lessonId: string;
   order: number;
@@ -116,7 +121,8 @@ export interface Activity {
   placeholder?: string[];
   aiGeneratedCode?: string;
   blanks?: CodeBlank[];
-  expectedIsssue?: string[];
+  /** Shown after "approve" in quality review when the sample has known issues */
+  expectedIssues?: string[];
   expectedOutput?: string;
   bugLine?: number;
   xpReward?: number;
@@ -127,12 +133,6 @@ export interface Activity {
   correctOrder?: string[];
   steps?: Step[];  
   bugChallenges?: bugChallenges[];
-  /** only applies when type === ActivityType.FIX_THE_CODE */
-  testCases?: {
-    input: string;
-    expectedOutput: string;
-    description: string;
-  }[];
   bestOption?: BestOption[];
   correctImplementationId?: string;
   commands?: TerminalCommandStep[];
@@ -177,10 +177,4 @@ export interface CodeBlock {
   code: string;
   indentLevel?: number;
   isDistractor?: boolean;
-}
-/** result from executing a test case */
-export interface TestResult {
-  description: string;
-  passed: boolean;
-  output?: string;
 }

@@ -1,14 +1,37 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { Activity } from '@/types';
 import { ActivityStatus, ActivityType, ProjectStatus } from '@/enums';
 import { activitiesData } from '@/test-utils/activities.dummy';
-import { aiResponses } from '@/consts/ai-responses';
+import { activityFeedback } from '@/consts/activity-feedback';
 import { useProject } from './useProject';
 import { useAIStreaming } from './useAIStreaming';
 
-export function useActivityPage() {
+/**
+ * Hook de página da lição.
+ *
+ * Recebe o `lessonId` (vindo da rota) e carrega as atividades dessa lição,
+ * filtrando por `activity.lessonId` e ordenando por `activity.order`.
+ *
+ * O estado de progresso (`activities` com `status` mutável) reseta quando
+ * `lessonId` muda — comportamento esperado ao trocar de lição.
+ */
+export function useActivityPage(lessonId: string) {
+  const initialActivities = useMemo<Activity[]>(
+    () =>
+      activitiesData
+        .filter((a) => a.lessonId === lessonId)
+        .sort((a, b) => a.order - b.order),
+    [lessonId]
+  );
+
   const [currentActivityIndex, setCurrentActivityIndex] = useState(0);
-  const [activities, setActivities] = useState<Activity[]>(activitiesData);
+  const [activities, setActivities] = useState<Activity[]>(() => initialActivities);
+
+  useEffect(() => {
+    setActivities(initialActivities);
+    setCurrentActivityIndex(0);
+  }, [initialActivities]);
+
   
   const { 
     project, 
@@ -37,9 +60,9 @@ export function useActivityPage() {
   );
 
   const triggerAIResponse = useCallback(async (responseKey: string) => {
-    const response = aiResponses[responseKey];
-    if (response) {
-      await streamText(response.text, 15);
+    const feedback = activityFeedback[responseKey];
+    if (feedback?.streamText) {
+      await streamText(feedback.streamText, 15);
     }
   }, [streamText]);
 
@@ -55,9 +78,18 @@ export function useActivityPage() {
     }));
   }, [currentActivityIndex]);
 
+  /**
+   * Marca a atividade como `COMPLETED`, desbloqueia a próxima e dispara o
+   * stream da resposta da AI.
+   *
+   * Este método é chamado pela `LessonPage` APENAS quando o aluno acerta
+   * a atividade — a checagem de sucesso/falha vive na página (que decide
+   * com base no `isCorrect` passado para `handleActivityComplete`). O hook
+   * não precisa, portanto, ser informado do resultado.
+   */
   const handleActivityComplete = useCallback(async (activityId: string, responseKey?: string) => {
     completeActivity(activityId);
-    
+
     addGitLogEntry({
       activityId,
       message: `feat: ${currentActivity?.title} completada`,
@@ -70,34 +102,65 @@ export function useActivityPage() {
     }
   }, [completeActivity, addGitLogEntry, currentActivity, triggerAIResponse]);
 
-  const handleDecision = useCallback(async (optionId: string) => {
-    const option = currentActivity?.options?.find(o => o.id === optionId);
-    if (!option || !currentActivity) return;
+  /**
+   * Grava escolha no projeto/git log apenas. Conclusão da atividade e stream de AI
+   * ficam com `handleActivityComplete` na LessonPage (modal + progresso).
+   */
+  const recordDecision = useCallback(
+    (choiceId: string) => {
+      if (!currentActivity) return;
 
-    addDecision({
-      activityId: currentActivity.id,
-      activityTitle: currentActivity.title,
-      choice: option.label,
-      timestamp: new Date(),
-      description: option.impact,
-    });
+      const fromOptions = currentActivity.options?.find((o) => o.id === choiceId);
+      if (fromOptions) {
+        addDecision({
+          activityId: currentActivity.id,
+          activityTitle: currentActivity.title,
+          choice: fromOptions.label,
+          timestamp: new Date(),
+          description: fromOptions.impact,
+        });
+        addGitLogEntry({
+          activityId: currentActivity.id,
+          message: `decision: ${fromOptions.label} escolhido`,
+          filesChanged: currentActivity.targetFiles ?? [],
+          type: 'decision',
+        });
+        return;
+      }
 
-    addGitLogEntry({
-      activityId: currentActivity.id,
-      message: `decision: ${option.label} escolhido`,
-      filesChanged: currentActivity.targetFiles,
-      type: 'decision',
-    });
+      const fromChoices = currentActivity.choices?.find((c) => c.id === choiceId);
+      if (fromChoices) {
+        addDecision({
+          activityId: currentActivity.id,
+          activityTitle: currentActivity.title,
+          choice: fromChoices.label,
+          timestamp: new Date(),
+          description: fromChoices.description,
+        });
+        addGitLogEntry({
+          activityId: currentActivity.id,
+          message: `escolha: ${fromChoices.label}`,
+          filesChanged: currentActivity.targetFiles ?? [],
+          type: 'decision',
+        });
+      }
+    },
+    [currentActivity, addDecision, addGitLogEntry]
+  );
 
-    const responseKey = `act-3-${optionId.replace('opt-', '')}`;
-    await triggerAIResponse(responseKey);
-    
-    completeActivity(currentActivity.id);
-  }, [currentActivity, addDecision, addGitLogEntry, triggerAIResponse, completeActivity]);
-
-  const handleCodeSubmit = useCallback(async (code: string, filePath: string) => {
+  /**
+   * Persiste o código submetido pelo aluno.
+   *
+   * Para `BREAK_AND_FIX`, também marca o projeto como `OK` e adiciona uma entrada
+   * `fix` no git log — efeitos colaterais do estado do projeto.
+   *
+   * IMPORTANTE: este método NÃO dispara stream de AI nem completa a atividade.
+   * Essa responsabilidade é da página (via `handleActivityComplete`), evitando
+   * duplicação quando ambos são chamados em sequência.
+   */
+  const handleCodeSubmit = useCallback((code: string, filePath: string) => {
     updateFile(filePath, code);
-    
+
     if (currentActivity?.type === ActivityType.BREAK_AND_FIX) {
       setStatus(ProjectStatus.OK);
       addGitLogEntry({
@@ -106,10 +169,8 @@ export function useActivityPage() {
         filesChanged: [filePath],
         type: 'fix',
       });
-      await triggerAIResponse('act-4-success');
-      completeActivity(currentActivity.id);
     }
-  }, [updateFile, currentActivity, setStatus, addGitLogEntry, triggerAIResponse, completeActivity]);
+  }, [updateFile, currentActivity, setStatus, addGitLogEntry]);
 
   const goToNextActivity = useCallback(() => {
     if (currentActivityIndex < activities.length - 1) {
@@ -151,7 +212,7 @@ export function useActivityPage() {
     aiResponse,
     canAdvance,
     handleActivityComplete,
-    handleDecision,
+    recordDecision,
     handleCodeSubmit,
     triggerAIResponse,
     goToNextActivity,
