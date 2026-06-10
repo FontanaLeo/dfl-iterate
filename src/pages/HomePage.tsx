@@ -4,6 +4,14 @@ import { Lesson } from '@/types';
 import { useLessons } from '@/hooks';
 import { Clock, Layers, ArrowRight } from 'lucide-react';
 import { Button } from '@devfellowship/components';
+import {
+  HomePageTopDataSlots,
+  HomePageBottomDataSlots,
+} from '@/components/data-layer/HomePageDataSlots';
+import { HomePageHeaderDataSlots } from '@/components/data-layer/HomePageHeaderDataSlots';
+import { LessonProgressBar } from '@/components/data-layer';
+import { previewLessonProgress } from '@/components/data-layer/preview.mock';
+import { PreviewSectionLabel } from '@/components/data-layer/PreviewSectionLabel';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -14,20 +22,23 @@ export default function HomePage() {
   };
 
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
-      {/* Header */}
-      <header className="shrink-0 border-b border-border">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl font-bold text-gradient">iterate</span>
-            <span className="text-sm text-muted-foreground">by DevFellowship</span>
+    <div className="min-h-screen bg-background flex flex-col">
+      <header className="shrink-0 border-b border-border bg-card/30">
+        <div className="container mx-auto px-4 py-4 md:py-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="text-2xl font-bold text-gradient">iterate</span>
+              <span className="text-sm text-muted-foreground">by DevFellowship</span>
+            </div>
+            <HomePageHeaderDataSlots />
           </div>
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto">
-        <div className="container mx-auto px-4 py-16">
-          {/* Hero Text */}
+      <main className="flex-1">
+        <div className="container mx-auto px-4 py-10 md:py-16">
+          <HomePageTopDataSlots />
+
           <motion.div
             className="text-center mb-16"
             initial={{ opacity: 0, y: 20 }}
@@ -44,7 +55,6 @@ export default function HomePage() {
             </p>
           </motion.div>
 
-          {/* Lessons Grid (com loading / erro) */}
           <motion.div
             className="max-w-4xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
@@ -79,11 +89,12 @@ export default function HomePage() {
               </div>
             )}
           </motion.div>
+
+          <HomePageBottomDataSlots />
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="shrink-0 border-t border-border">
+      <footer className="shrink-0 border-t border-border mt-auto">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
             <span>Feito com</span>
@@ -112,12 +123,10 @@ function LessonCard({ lesson, index, onStart }: LessonCardProps) {
       whileHover={{ scale: 1.01 }}
     >
       <div className="flex flex-col md:flex-row md:items-center gap-6">
-        {/* Icon */}
         <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
           <span className="text-4xl">🥊</span>
         </div>
 
-        {/* Content */}
         <div className="flex-1">
           <h3 className="text-xl font-bold text-foreground mb-2">{lesson.title}</h3>
           <p className="text-muted-foreground mb-4">{lesson.description}</p>
@@ -127,11 +136,15 @@ function LessonCard({ lesson, index, onStart }: LessonCardProps) {
               <Clock className="w-4 h-4" />
               <span>{lesson.estimatedMinutes} min</span>
             </div>
-
             <div className="flex items-center gap-1.5">
               <Layers className="w-4 h-4" />
               <span>{lesson.totalActivities} atividades</span>
             </div>
+          </div>
+
+          <div className="mt-4 max-w-md" data-slot="T5">
+            <PreviewSectionLabel taskId="T5" />
+            <LessonProgressBar progress={previewLessonProgress} />
           </div>
         </div>
 
