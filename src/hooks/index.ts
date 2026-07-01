@@ -9,4 +9,4 @@ export type { UseFixTheCodeCallbacks } from './useFixTheCode';
 export { useQualityReview } from './useQualityReview';
 export type { UseQualityReviewCallbacks } from './useQualityReview';
 export { useLessons } from './useLessons';
-export { useGetLessonProgress } from './useGetLessonProgress';
+export { useLessonProgressBar } from './useLessonProgressBar';
