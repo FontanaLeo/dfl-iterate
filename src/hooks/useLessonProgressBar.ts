@@ -6,5 +6,6 @@ export function useLessonProgressBar(lessonId: string) {
   return useQuery({
     queryKey: queryKeys.lessonProgress.byLesson(lessonId),
     queryFn: () => getLessonProgress(lessonId),
+    enabled: !!lessonId,
   });
 }
