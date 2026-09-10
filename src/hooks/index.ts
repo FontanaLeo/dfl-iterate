@@ -15,4 +15,5 @@ export { useLessonProgressBarById } from './useLessonProgressBar';
 export { useGetRecentActivity } from './useGetRecentActivity';
 export { useGetUserStats } from './useGetUserStats';
 export { useGetUserPreferences } from './useGetUserPreferences';
+export { useAddActivityEvent } from './useAddActivityEvent';
 export { useUpdateUserPreferences } from './useUpdateUserPreferences';
